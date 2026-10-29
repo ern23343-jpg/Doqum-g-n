@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Operasyon: Efsane Baba</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Arial,sans-serif;background:#080512;color:white}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;
+align-items:center;justify-content:center;text-align:center;
+padding:22px;overflow:hidden;background:radial-gradient(circle,#39204e,#080512 75%)}
+.screen.active{display:flex}
+h1{font-size:clamp(36px,8vw,85px);color:#ffe69a;
+text-shadow:0 0 15px gold,0 0 40px #ff7700;margin:14px 0}
+p{font-size:clamp(16px,3vw,23px)}
+button{position:relative;z-index:5;margin:9px;padding:14px 23px;
+border:2px solid #fff0a1;border-radius:40px;
+background:linear-gradient(120deg,#fff4b4,#ffc000,#ff8b00);
+color:#281400;font-weight:900;font-size:15px;cursor:pointer}
+button:active{transform:scale(.96)}
+.gold{color:#ffe99a}
+.stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;color:#ffe69a;animation:twinkle 1.4s infinite alternate}
+.beam{position:absolute;width:50vw;height:120vh;top:-10vh;left:25%;
+background:linear-gradient(transparent,#ffda5b20,transparent);
+clip-path:polygon(45% 0,55% 0,100% 100%,0 100%);
+transform-origin:top center;animation:sweep 5s linear infinite;pointer-events:none}
+@keyframes twinkle{to{opacity:.15;transform:scale(.5)}}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@keyframes glow{to{text-shadow:0 0 30px gold,0 0 70px orange;transform:scale(1.04)}}
+@keyframes rise{from{transform:translateY(40px) scale(.5);opacity:0}to{transform:none;opacity:1}}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.big{font-size:clamp(45px,10vw,105px);font-weight:1000;color:#fff0a0;
+text-shadow:0 0 15px gold,0 0 45px #ff7300;animation:glow .8s infinite alternate}
+#flash{position:fixed;inset:0;z-index:20;background:white;opacity:0;pointer-events:none}
+#flash.go{animation:flash .7s}
+#counter{font-size:clamp(100px,27vw,240px);font-weight:1000;color:#ffe69a;
+text-shadow:0 0 30px gold,0 0 70px orange}
+#birthday{display:none}
+#confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.piece{position:absolute;top:-30px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(900deg)}}
+#envelope{font-size:clamp(90px,20vw,170px);cursor:pointer;animation:glow 1s infinite alternate}
+#letter{display:none;max-width:600px;border:2px solid gold;border-radius:20px;
+padding:25px;background:#1b1037eF;color:#fff0b0;font-size:clamp(20px,4vw,35px);
+box-shadow:0 0 40px gold;animation:rise .8s}
+#recordNum{font-size:clamp(48px,12vw,115px);color:#ffe58b;font-weight:1000}
+#award{font-size:clamp(75px,16vw,145px);animation:glow 1s infinite alternate}
+.small{font-size:12px;opacity:.75}
+</style>
+</head>
+<body>
+<div id="flash"></div>
+<div id="confetti"></div>
+
+<section class="screen active" id="home">
+  <div class="stars" id="stars1"></div>
+  <div style="font-size:75px">👑</div>
+  <p class="gold">ÇOK GİZLİ BİR GÖREV</p>
+  <h1>OPERASYON:<br> EFSANE BABA</h1>
+  <p>Bu gece bütün ışıklar tek bir kişi için yanacak.</p>
+  <button onclick="show('party')">GÖREVİ BAŞLAT ✨</button>
+</section>
+
+<section class="screen" id="party">
+  <div class="beam"></div><div class="beam" style="animation-delay:-2s"></div>
+  <div class="stars" id="stars2"></div>
+  <div style="font-size:70px">🎬</div>
+  <p class="gold">GECENİN ONUR KONUĞU</p>
+  <h1>SAHNE SENİN!</h1>
+  <p>Ödül töreni başlamak üzere.</p>
+  <button onclick="awardShow()">👑 ÖDÜL TÖRENİ</button>
+  <button onclick="startCountdown()">🔥 BÜYÜK FİNAL</button>
+</section>
+
+<section class="screen" id="awards">
+  <div class="beam"></div><div class="beam" style="animation-delay:-3s"></div>
+  <div id="award">🏆</div>
+  <p class="gold">BU ÖDÜL SADECE BİR KİŞİYE VERİLİR</p>
+  <h1>YILIN EFSANE BABASI!</h1>
+  <p>SEVGİDE, GÜÇTE VE BABALIKTA BİR NUMARA!</p>
+  <button onclick="startCountdown()">🎆 FİNALİ BAŞLAT</button>
+  <button onclick="show('party')">GERİ DÖN</button>
+</section>
+
+<section class="screen" id="finale">
+  <div class="beam"></div><div class="beam" style="animation-delay:-2s"></div>
+  <div class="stars" id="stars3"></div>
+  <p class="gold" id="countLabel">BÜYÜK GÖSTERİ BAŞLIYOR</p>
+  <div id="counter">10</div>
+  <div id="birthday" class="big">DOĞUM GÜNÜN<br>KUTLU OLSUN!</div>
+  <div id="partyEmoji" style="display:none;font-size:55px">🎂 🎇 🎉 🥳</div>
+  <div id="finalButtons" style="display:none">
+    <button onclick="recordShow()">🏆 REKORU GÖR</button>
+    <button onclick="openEnvelope()">✉️ ALTIN ZARFI AÇ</button>
+    <button onclick="show('party')">MENÜYE DÖN</button>
+  </div>
+</section>
+
+<section class="screen" id="record">
+  <div class="beam"></div><div class="beam" style="animation-delay:-2s"></div>
+  <div class="stars" id="stars4"></div>
+  <div style="font-size:85px">🏆</div>
+  <p class="gold">ÖZEL EĞLENCE AMAÇLI REKOR</p>
+  <div class="big" style="font-size:clamp(25px,6vw,62px)">GUINNESS WORLD RECORDS</div>
+  <h1>DÜNYANIN<br>EN İYİ BABASI!</h1>
+  <div id="recordNum">0</div>
+  <p>SEVGİ PUANI</p>
+  <button onclick="openEnvelope()">✉️ GİZEMLİ ZARFI AÇ</button>
+  <button onclick="show('party')">ANA MENÜ</button>
+  <p class="small">Bu, aileye özel hayalî bir rekor gösterisidir; resmî Guinness rekoru değildir.</p>
+</section>
+
+<section class="screen" id="envelopeScreen">
+  <div class="beam"></div>
+  <p class="gold">SADECE EFSANE BABALAR İÇİN</p>
+  <h1>GİZEMLİ ALTIN ZARF</h1>
+  <div id="envelope" onclick="revealLetter()">✉️</div>
+  <p>Zarfı açmak için dokun!</p>
+  <div id="letter">💛 BU ALANA KENDİ MESAJINI YAZABİLİRSİN! 💛</div>
+  <button onclick="show('party')">MENÜYE DÖN</button>
+</section>
+
+<script>
+const ids=["home","party","awards","finale","record","envelopeScreen"];
+let timer=null,confettiTimer=null,recordTimer=null;
+function show(id){
+  stopAll();
+  ids.forEach(x=>document.getElementById(x).classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function stopAll(){
+  if(timer)clearInterval(timer);
+  if(confettiTimer)clearInterval(confettiTimer);
+  if(recordTimer)clearInterval(recordTimer);
+  timer=confettiTimer=recordTimer=null;
+}
+function stars(id){
+  let box=document.getElementById(id);
+  for(let i=0;i<35;i++){
+    let s=document.createElement("span");s.className="star";
+    s.textContent=["✦","✧","★","·"][i%4];
+    s.style.left=Math.random()*100+"%";s.style.top=Math.random()*100+"%";
+    s.style.fontSize=(10+Math.random()*24)+"px";
+    s.style.animationDelay=Math.random()*2+"s";box.appendChild(s);
+  }
+}
+["stars1","stars2","stars3","stars4"].forEach(stars);
+function awardShow(){show("awards");burst(60)}
+function flash(){
+  let f=document.getElementById("flash");f.classList.remove("go");
+  void f.offsetWidth;f.classList.add("go");
+}
+function burst(amount=30){
+  let box=document.getElementById("confetti");
+  for(let i=0;i<amount;i++){
+    let p=document.createElement("span");p.className="piece";
+    p.textContent=["✨","⭐","🎉","🎆","💛"][Math.floor(Math.random()*5)];
+    p.style.left=Math.random()*100+"%";
+    p.style.fontSize=(15+Math.random()*28)+"px";
+    p.style.animationDuration=(2+Math.random()*3)+"s";
+    box.appendChild(p);setTimeout(()=>p.remove(),5200);
+  }
+}
+function startCountdown(){
+  show("finale");burst(40);
+  document.getElementById("countLabel").style.display="block";
+  document.getElementById("counter").style.display="block";
+  document.getElementById("birthday").style.display="none";
+  document.getElementById("partyEmoji").style.display="none";
+  document.getElementById("finalButtons").style.display="none";
+  let n=10;document.getElementById("counter").textContent=n;
+  timer=setInterval(()=>{
+    n--;
+    if(n>0){document.getElementById("counter").textContent=n;flash()}
+    else{
+      clearInterval(timer);timer=null;
+      document.getElementById("countLabel").style.display="none";
+      document.getElementById("counter").style.display="none";
+      document.getElementById("birthday").style.display="block";
+      document.getElementById("partyEmoji").style.display="block";
+      document.getElementById("finalButtons").style.display="block";
+      flash();burst(100);
+      confettiTimer=setInterval(()=>{burst(35);flash()},1800);
+      fanfare();
+    }
+  },1000);
+}
+function fanfare(){
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+    let c=new C();
+    [523,659,784,1047,1318,1047].forEach((f,i)=>{
+      let o=c.createOscillator(),g=c.createGain();
+      o.type="triangle";o.frequency.value=f;o.connect(g);g.connect(c.destination);
+      let t=c.currentTime+i*.18;
+      g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.12,t+.03);
+      g.gain.exponentialRampToValueAtTime(.001,t+.16);o.start(t);o.stop(t+.17);
+    });
+    setTimeout(()=>c.close(),1800);
+  }catch(e){}
+}
+function recordShow(){
+  show("record");burst(80);
+  let n=0;const out=document.getElementById("recordNum");out.textContent="0";
+  recordTimer=setInterval(()=>{
+    n+=Math.ceil((1000000-n)*.22);
+    if(n>=1000000){n=1000000;clearInterval(recordTimer);recordTimer=null}
+    out.textContent=n.toLocaleString("tr-TR");
+  },60);
+}
+function openEnvelope(){
+  show("envelopeScreen");
+  document.getElementById("letter").style.display="none";
+  document.getElementById("envelope").style.display="block";
+}
+function revealLetter(){
+  document.getElementById("envelope").style.display="none";
+  document.getElementById("letter").style.display="block";
+  burst(45);flash();
+}
+</script>
+</body>
+</html>
